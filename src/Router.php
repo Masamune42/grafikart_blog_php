@@ -52,6 +52,7 @@ class Router
         // On récupère le chemin de la page souhaitée
         $view = $match['target'];
         // On démarre le buffer
+        $router = $this;
         ob_start();
         require $this->viewPath . DIRECTORY_SEPARATOR . $view . '.php';
         // On récupère le contenu dans le buffer et on le vide
@@ -59,5 +60,9 @@ class Router
         // On charge le layout de la page HTML qui appelle $content à l'intérieur
         require $this->viewPath . DIRECTORY_SEPARATOR . 'layouts/default.php';
         return $this;
+    }
+
+    public function url (string $name, array $params = []) {
+        return $this->router->generate($name, $params);
     }
 }
