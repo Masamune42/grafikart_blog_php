@@ -10,7 +10,7 @@ $whoops->register();
 
 $router = new App\Router(dirname(__DIR__) . '/views');
 $router
-    ->get('/','post/index','')
+    ->get('/','post/index','home')
     ->get('/blog/[*:slug]-[i:id]','post/index', 'post')
     ->get('/blog/category','category/show', 'category')
     ->run();
