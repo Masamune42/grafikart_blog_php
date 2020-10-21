@@ -27,6 +27,7 @@ if ($post->getSlug() !== $slug) {
     header('Location: ' . $url);
 }
 
+// On récupère toutes les catégories qui sont associés à cet article
 $query = $pdo->prepare('
 SELECT c.id, c.slug, c.name
 FROM post_category pc

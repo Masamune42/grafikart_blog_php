@@ -8,7 +8,7 @@ use App\URL;
 // On récupère l'id et le slug
 $id = (int)$params['id'];
 $slug = $params['slug'];
-// On se connecte à la BDD et on récupère le post de l'id
+// On se connecte à la BDD et on récupère la catégorie de l'id
 $pdo = Connection::getPDO();
 $query = $pdo->prepare('SELECT * FROM category WHERE id = :id');
 $query->execute(['id' => $id]);
@@ -20,22 +20,29 @@ if ($category === false) {
     throw new Exception('Aucune catégorie ne correspond à cet ID');
 }
 
-// Si le slug que l'on a tapé est différent de celui du post dont l'id est bon
+// Si le slug que l'on a tapé est différent de celui de la catégorie dont l'id est bon
 if ($category->getSlug() !== $slug) {
-    // On génère le vrai URL de l'article
+    // On génère le vrai URL de la catégorie
     $url = $router->url('category', ['slug' => $category->getSlug(), 'id' => $id]);
     // Redirection vers la bonne URL
     http_response_code(301);
     header('Location: ' . $url);
 }
 
+/*  */
+/* Listing des articles ayant la même catégorie */
+/*  */
+
 $currentPage = URL::getPositiveInt('page', 1);
 if ($currentPage <= 0) {
     throw new Exception('Numéro de page invalide');
 }
+
+// On récupère le nombre de catégorie avec l'id courant associés à des articles
 $count = (int)$pdo
     ->query('SELECT COUNT(category_id) FROM post_category WHERE category_id = ' . $category->getId())
     ->fetch(PDO::FETCH_NUM)[0];
+// Nombre limite d'articles par page
 $perPage = 12;
 $pages = ceil($count / $perPage);
 if ($currentPage > $pages) {
@@ -43,6 +50,7 @@ if ($currentPage > $pages) {
 }
 
 $offset = $perPage * ($currentPage - 1);
+// Requête avec jointure pour récupérer les articles dont le numéro de catégorie est celui sélectionné
 $query = $pdo->query("
     SELECT p.*
     FROM post p
@@ -59,6 +67,7 @@ $title = "Catégorie {$category->getName()}";
 
 <h1>Catégorie <?= e($category->getName()) ?></h1>
 
+<!-- Affiche des articles -->
 <div class="row">
     <?php foreach ($posts as $post) : ?>
         <div class="col-md-3">
@@ -67,6 +76,7 @@ $title = "Catégorie {$category->getName()}";
     <?php endforeach; ?>
 </div>
 
+<!-- Affichage des boutons page précédente / suivante -->
 <div class="d-flex justify-content-between my-4">
     <?php if ($currentPage > 1) : ?>
         <?php
