@@ -51,6 +51,8 @@ class Router
         $match = $this->router->match();
         // On récupère le chemin de la page souhaitée
         $view = $match['target'];
+        // On sauvegarde les paramètres de l'URL (slug et id)
+        $params = $match['params'];
         // On démarre le buffer
         $router = $this;
         ob_start();

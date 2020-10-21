@@ -43,6 +43,14 @@ class Post
     }
 
     /**
+     * Get the formatted value of content
+     */
+    public function getFormattedContent()
+    {
+        return nl2br(e($this->content));
+    }
+
+    /**
      * Get the value of name
      */
     public function getName()

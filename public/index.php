@@ -8,6 +8,7 @@ $whoops = new \Whoops\Run;
 $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
 $whoops->register();
 
+// Si on a renseigné une page à afficher et égal à 1
 if (isset($_GET['page']) && $_GET['page'] === '1') {
     // On réécrit l'url sans le paramètre page=1
     $uri = explode('?', $_SERVER['REQUEST_URI'])[0];
@@ -25,6 +26,6 @@ if (isset($_GET['page']) && $_GET['page'] === '1') {
 $router = new App\Router(dirname(__DIR__) . '/views');
 $router
     ->get('/', 'post/index', 'home')
-    ->get('/blog/[*:slug]-[i:id]', 'post/index', 'post')
-    ->get('/blog/category', 'category/show', 'category')
+    ->get('/blog/category/[*:slug]-[i:id]', 'category/show', 'category')
+    ->get('/blog/[*:slug]-[i:id]', 'post/show', 'post')
     ->run();
