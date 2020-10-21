@@ -3,7 +3,7 @@
 use App\Connection;
 use App\Model\Category;
 use App\Model\Post;
-use App\URL;
+use App\PaginatedQuery;
 
 // On récupère l'id et le slug
 $id = (int)$params['id'];
@@ -33,33 +33,34 @@ if ($category->getSlug() !== $slug) {
 /* Listing des articles ayant la même catégorie */
 /*  */
 
-$currentPage = URL::getPositiveInt('page', 1);
-if ($currentPage <= 0) {
-    throw new Exception('Numéro de page invalide');
-}
+/** AIDE POUR CREER LES FONCTIONS
+ * Paramètres qui varient :
+ * $sqlListing: string
+ * $classMapping: string
+ * $sqlCount: string
+ * $perPage: int = 12
+ * 
+ * Paramètre externes :
+ * //$currentPage
+ * $pdo: PDO = Conection::getPDO()
+ * 
+ * Fonctions :
+ * getItems():array -> va réupérer les résultats / articles pour notre listing
+ * previousPageLink(): ?string -> On récupère le lien de la page précédente
+ * nextPageLink(): ?string -> On récupère le lien de la page suivante
+ */
 
-// On récupère le nombre de catégorie avec l'id courant associés à des articles
-$count = (int)$pdo
-    ->query('SELECT COUNT(category_id) FROM post_category WHERE category_id = ' . $category->getId())
-    ->fetch(PDO::FETCH_NUM)[0];
-// Nombre limite d'articles par page
-$perPage = 12;
-$pages = ceil($count / $perPage);
-if ($currentPage > $pages) {
-    throw new Exception('Cette page n\'existe pas');
-}
+$paginatedQuery = new PaginatedQuery(
+    "SELECT p.*
+        FROM post p
+        JOIN post_category pc ON pc.post_id = p.id
+        WHERE pc.category_id = {$category->getId()}
+        ORDER BY created_at DESC",
+    'SELECT COUNT(category_id) FROM post_category WHERE category_id = ' . $category->getId()
+);
 
-$offset = $perPage * ($currentPage - 1);
-// Requête avec jointure pour récupérer les articles dont le numéro de catégorie est celui sélectionné
-$query = $pdo->query("
-    SELECT p.*
-    FROM post p
-    JOIN post_category pc ON pc.post_id = p.id
-    WHERE pc.category_id = {$category->getId()}
-    ORDER BY created_at DESC
-    LIMIT $perPage OFFSET $offset
-    ");
-$posts = $query->fetchAll(PDO::FETCH_CLASS, Post::class);
+/** @var Post[] */
+$posts = $paginatedQuery->getItems(Post::class);
 $link = $router->url('category', ['slug' => $category->getSlug(), 'id' => $id]);
 
 $title = "Catégorie {$category->getName()}";
@@ -78,14 +79,6 @@ $title = "Catégorie {$category->getName()}";
 
 <!-- Affichage des boutons page précédente / suivante -->
 <div class="d-flex justify-content-between my-4">
-    <?php if ($currentPage > 1) : ?>
-        <?php
-        $l = $link;
-        if ($currentPage > 2) $l .= '?page=' . ($currentPage - 1);
-        ?>
-        <a href="<?= $l ?>" class="btn btn-primary">&laquo; Page précédente</a>
-    <?php endif; ?>
-    <?php if ($currentPage < $pages) : ?>
-        <a href="<?= $link ?>?page=<?= $currentPage + 1 ?>" class="btn btn-primary ml-auto">Page suivante &raquo;</a>
-    <?php endif; ?>
+    <?= $paginatedQuery->previousLink($link); ?>
+    <?= $paginatedQuery->nextLink($link); ?>
 </div>

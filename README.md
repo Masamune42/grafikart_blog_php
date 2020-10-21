@@ -4,6 +4,7 @@
 - altorouter/altorouter : Permet de faire le routing vers les views
 - symfony/var-dumper : Permet de faire de jolis var_dump
 - filp/whoops : Permet d'afficher de belles pages d'erreurs et les erreurs sur les fichiers concernés (avec la ligne concernée)
+- fzaninotto/faker : Permet de générer du texte aléatoire suivant le besoin
 
 ## Tips
 ### Si on veut utiliser un fichier PHP avec des fonctions dedans pour les utiliser, on peut demander à l'autoloader de le faire :
@@ -23,3 +24,13 @@
 Les redirections (301) sont mises en cache par le navigateur, on peut désactiver une redirection qui était présente, qui a été changée, mais toujours active :
 - On ouvre le DevTools (F12)
 - Dans Network -> Disable Cache
+
+
+### Refactoring
+Méthode de refactoring de code utilisé pour la pagination entre les pages **category/show.php** et **post/index.php** (vidéo : Réorganisation de la pagination) :
+- On prend 2 pages avec un code similaire
+- On regarde pour les 2 pages les éléments / variables qui changent et on les place en commentaire dans un des 2 fichiers -> ex : requête SQL
+- Tous les éléments quu changent sont traduits en paramètres => $sqlListing, $classMapping, $sqlCount, $perPage
+- On repère les paramètres externes, ce dont la fonction à besoin pour fonctionner => $pdo, $currentPage
+- Parmi les paramètres externes, déterminer ceux qui sont nécessaires ou pas
+- On regarde ensuite de quelles fonctions on a besoin
