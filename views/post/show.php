@@ -37,6 +37,7 @@ $query->setFetchMode(PDO::FETCH_CLASS, Category::class);
 /** @var Category[] */
 $categories = $query->fetchAll();
 
+$title = "Article {$post->getName()}";
 ?>
 
 <h1 class="card-title"><?= e($post->getName()) ?></h1>
