@@ -93,4 +93,10 @@ class Post
 
         return $this;
     }
+
+    public function addCategory(Category $category): self
+    {
+        $this->categories[] = $category;
+        return $this;
+    }
 }
