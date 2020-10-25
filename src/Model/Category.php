@@ -13,6 +13,8 @@ class Category
 
     private $post_id;
 
+    private $post;
+
     /**
      * Get the value of id
      */
@@ -55,7 +57,7 @@ class Category
 
     /**
      * Get the value of name
-     */ 
+     */
     public function getName(): ?string
     {
         return $this->name;
@@ -65,7 +67,7 @@ class Category
      * Set the value of name
      *
      * @return  self
-     */ 
+     */
     public function setName($name): self
     {
         $this->name = $name;
@@ -75,7 +77,7 @@ class Category
 
     /**
      * Get the value of post_id
-     */ 
+     */
     public function getPost_id(): ?int
     {
         return $this->post_id;
@@ -85,11 +87,16 @@ class Category
      * Set the value of post_id
      *
      * @return  self
-     */ 
+     */
     public function setPost_id($post_id)
     {
         $this->post_id = $post_id;
 
         return $this;
+    }
+
+    public function setPost(Post $post)
+    {
+        $this->post = $post;
     }
 }

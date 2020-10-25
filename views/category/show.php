@@ -62,6 +62,25 @@ $paginatedQuery = new PaginatedQuery(
 /** @var Post[] */
 $posts = $paginatedQuery->getItems(Post::class);
 $link = $router->url('category', ['slug' => $category->getSlug(), 'id' => $id]);
+/* Partie récupération des catégories des articles */
+$postsByID = [];
+// On récupère l'id de chaque post et on y place chaque post correspondant
+foreach ($posts as $post) {
+    $postsByID[$post->getId()] = $post;
+}
+/** @var Category[] */
+$categories = $pdo
+    ->query('SELECT c.*, pc.post_id
+            FROM post_category pc
+            JOIN category c ON c.id = pc.category_id 
+            WHERE pc.post_id IN (' . implode(",", array_keys($postsByID)) . ')')
+    ->fetchAll(PDO::FETCH_CLASS, Category::class);
+
+
+// On va insérer chaque catégorie dans le tableau de catégories du post dont l'id de catégorie courant est le même
+foreach ($categories as $category) {
+    $postsByID[$category->getPost_id()]->addCategory($category);
+}
 
 $title = "Catégorie {$category->getName()}";
 ?>

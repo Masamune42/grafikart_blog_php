@@ -67,14 +67,6 @@ class Post
     }
 
     /**
-     * Get the value of categories
-     */
-    public function getCategories()
-    {
-        return $this->categories;
-    }
-
-    /**
      * Get the value of slug
      */
     public function getSlug(): ?string
@@ -94,9 +86,22 @@ class Post
         return $this;
     }
 
+    /**
+     * @return Category[]
+     */
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    /**
+     * @param Category $category
+     * @return self
+     */
     public function addCategory(Category $category): self
     {
         $this->categories[] = $category;
+        $category->setPost($this);
         return $this;
     }
 }

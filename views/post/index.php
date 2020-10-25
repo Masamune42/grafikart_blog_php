@@ -31,15 +31,14 @@ $categories = $pdo
             JOIN category c ON c.id = pc.category_id 
             WHERE pc.post_id IN (' . implode(",", array_keys($postsByID)) . ')')
     ->fetchAll(PDO::FETCH_CLASS, Category::class);
-dump($categories);
-$link = $router->url('home');
+
 
 // On va insérer chaque catégorie dans le tableau de catégories du post dont l'id de catégorie courant est le même
 foreach ($categories as $category) {
-    $postsByID[$category->getPost_id()]->categories[] = $category;
+    $postsByID[$category->getPost_id()]->addCategory($category);
 }
 
-dd($posts);
+$link = $router->url('home');
 ?>
 
 <h1>Mon blog</h1>
