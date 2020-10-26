@@ -76,7 +76,7 @@ class Category
     }
 
     /**
-     * Get the value of post_id
+     * Renvoie l'id de l'article auquel le catégorie est associée dans la requête
      */
     public function getPost_id(): ?int
     {

@@ -30,7 +30,30 @@ Les redirections (301) sont mises en cache par le navigateur, on peut désactive
 Méthode de refactoring de code utilisé pour la pagination entre les pages **category/show.php** et **post/index.php** (vidéo : Réorganisation de la pagination) :
 - On prend 2 pages avec un code similaire
 - On regarde pour les 2 pages les éléments / variables qui changent et on les place en commentaire dans un des 2 fichiers -> ex : requête SQL
-- Tous les éléments quu changent sont traduits en paramètres => $sqlListing, $classMapping, $sqlCount, $perPage
+- Tous les éléments qui changent sont traduits en paramètres => $sqlListing, $classMapping, $sqlCount, $perPage
 - On repère les paramètres externes, ce dont la fonction à besoin pour fonctionner => $pdo, $currentPage
 - Parmi les paramètres externes, déterminer ceux qui sont nécessaires ou pas
 - On regarde ensuite de quelles fonctions on a besoin
+
+### Appel d'une classe qu'on ne réutilise pas
+On peut déclarer de cette façon une classe si on veut utiliser une méthode sur une class qu'on ne réutilisera pas
+```PHP
+$category = (new CategoryTable($pdo))->find($id);
+```
+
+### Récupération des éléments d'un tableau dans uen variable
+Si on retourne dans une fonction un tableau avec des éléments définis :
+```PHP
+ return [$posts, $paginatedQuery];
+```
+On peut par la suite les récupérer en appelant cette fonction avec :
+```PHP
+// 1. La fonction list()
+list($posts, $pagination) = $table->findPaginated();
+// 2. Un tableau -> valable que dans les nouvelles versions de PHP
+[$posts, $pagination] = $table->findPaginated();
+```
+
+### Types de classe
+- abstract : Classe qui est prévue pour être héritée
+- final : Classe qui ne sera pas héritée

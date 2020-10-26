@@ -1,42 +1,26 @@
 <?php
 
 use App\Connection;
-use App\Model\Category;
-use App\Model\Post;
-use App\PaginatedQuery;
+use App\Table\PostTable;
 
 $title = 'Mon blog';
 
 $pdo = Connection::getPDO();
+// On déclare un nouvel objet avec lequel on va pouvoir effectuer des requêtes sur les articles
+$table = new PostTable($pdo);
 
-
-$paginatedQuery = new PaginatedQuery(
-    "SELECT * FROM post ORDER BY created_at DESC",
-    'SELECT COUNT(id) FROM post'
-);
-
-/** @var Post[] */
-$posts = $paginatedQuery->getItems(Post::class);
-
-/* Partie récupération des catégories des articles */
-$postsByID = [];
-// On récupère l'id de chaque post et on y place chaque post correspondant
-foreach ($posts as $post) {
-    $postsByID[$post->getId()] = $post;
-}
-/** @var Category[] */
-$categories = $pdo
-    ->query('SELECT c.*, pc.post_id
-            FROM post_category pc
-            JOIN category c ON c.id = pc.category_id 
-            WHERE pc.post_id IN (' . implode(",", array_keys($postsByID)) . ')')
-    ->fetchAll(PDO::FETCH_CLASS, Category::class);
-
-
-// On va insérer chaque catégorie dans le tableau de catégories du post dont l'id de catégorie courant est le même
-foreach ($categories as $category) {
-    $postsByID[$category->getPost_id()]->addCategory($category);
-}
+// OLD : récupération du tableau dans des variables
+/*
+$var = $table->findPaginated();
+$posts = $var[0];
+$pagination = $var[1];
+*/
+// On récupère les objets d'un tableau dans des variables définies
+/* 
+list($posts, $pagination) = $table->findPaginated();
+ */
+// 2e solution : seulement dans les nouvelles versions de PHP
+[$posts, $pagination] = $table->findPaginated();
 
 $link = $router->url('home');
 ?>
@@ -52,6 +36,6 @@ $link = $router->url('home');
 </div>
 
 <div class="d-flex justify-content-between my-4">
-    <?= $paginatedQuery->previousLink($link); ?>
-    <?= $paginatedQuery->nextLink($link); ?>
+    <?= $pagination->previousLink($link); ?>
+    <?= $pagination->nextLink($link); ?>
 </div>
