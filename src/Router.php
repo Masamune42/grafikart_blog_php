@@ -27,7 +27,7 @@ class Router
     }
 
     /**
-     * Fonction qui crée une route vers une page
+     * Fonction qui crée une route vers une page en méthode GET
      *
      * @param string $url URL voulu
      * @param string $view chemin du fichier PHP à afficher
@@ -37,6 +37,20 @@ class Router
     public function get(string $url, string $view, ?string $name = null): self
     {
         $this->router->map('GET', $url, $view, $name);
+        return $this;
+    }
+    
+    /**
+     * Fonction qui crée une route vers une page en méthode POST
+     *
+     * @param string $url URL voulu
+     * @param string $view chemin du fichier PHP à afficher
+     * @param string|null $name nom de la page
+     * @return self
+     */
+    public function post(string $url, string $view, ?string $name = null): self
+    {
+        $this->router->map('POST', $url, $view, $name);
         return $this;
     }
 
