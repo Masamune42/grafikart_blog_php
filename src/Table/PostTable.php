@@ -58,14 +58,23 @@ final class PostTable extends Table
         return [$posts, $paginatedQuery];
     }
 
+    /**
+     * Met à jour les information d'un article en BDD, sinon renvoie une Exception
+     *
+     * @param Post $post L'article à modifier
+     * @return void
+     */
     public function update(Post $post): void
     {
-        $query = $this->pdo->prepare("UPDATE {$this->table} SET name = :name WHERE id = :id");
+        $query = $this->pdo->prepare("UPDATE {$this->table} SET name = :name, slug = :slug, created_at = :created, content = :content WHERE id = :id");
         $ok = $query->execute([
             'id' => $post->getId(),
-            'name' => $post->getName()
+            'name' => $post->getName(),
+            'slug' => $post->getSlug(),
+            'content' => $post->getContent(),
+            'created' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
         ]);
         if (!$ok)
-            throw new \Exception("Impossible de supprimer l'enregristrement $id dans la table {$this->table}");
+            throw new \Exception("Impossible de modifier l'enregristrement {$post->getId()} dans la table {$this->table}");
     }
 }

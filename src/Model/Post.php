@@ -82,9 +82,21 @@ class Post
     /**
      * Get the value of created_at
      */
-    public function getCreated_at(): \DateTime
+    public function getCreatedAt(): \DateTime
     {
         return new DateTime($this->created_at);
+    }
+
+    /**
+     * Set the value of created_at
+     *
+     * @return  self
+     */
+    public function setCreatedAt(string $created_at): self
+    {
+        $this->created_at = $created_at;
+
+        return $this;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 use App\Connection;
+use App\HTML\Form;
 use App\Model\Post;
 use App\Table\PostTable;
 use App\Validator;
@@ -20,12 +21,16 @@ if (!empty($_POST)) {
     Validator::lang('fr');
     // On instancie Validator en vérifiant tout ce qui est envoyé en POST
     $v = new Validator($_POST);
-    // Vérification de la règle 'required' sur le champ 'name'
-    $v->rule('required', 'name');
-    // Vérification de la taille entre 3 et 200 sur le champ 'name'
-    $v->rule('lengthBetween', 'name', 3, 200);
-    // On change le nom de l'article dans l'objet
-    $post->setName($_POST['name']);
+    // Vérification de la règle 'required' sur les champs 'name' et 'slug'
+    $v->rule('required', ['name', 'slug']);
+    // Vérification de la taille entre 3 et 200 sur les champs 'name' et 'slug'
+    $v->rule('lengthBetween', ['name', 'slug'], 3, 200);
+    // On change les éléments de l'article dans l'objet
+    $post
+        ->setName($_POST['name'])
+        ->setContent($_POST['content'])
+        ->setSlug($_POST['slug'])
+        ->setCreatedAt($_POST['created_at']);
     // Si la validation des données est ok, on peut modifier l'article
     if ($v->validate()) {
         $postTable->update($post);
@@ -34,6 +39,7 @@ if (!empty($_POST)) {
         $errors = $v->errors();
     }
 }
+$form = new Form($post, $errors);
 ?>
 
 <?php if ($success) : ?>
@@ -51,15 +57,13 @@ if (!empty($_POST)) {
 <h1>Editer l'article <?= e($post->getName()) ?></h1>
 
 <form action="" method="POST">
-    <div class="form-group">
-        <label for="name">Titre</label>
-        <input type="text" class="form-control <?= isset($errors['name']) ? 'is-invalid' : '' ?>" name="name" value="<?= e($post->getName()) ?>" required>
-        <?php if (isset($errors['name'])) : ?>
-            <!-- Message d'erreur si le champ n'a pas passé les validations -->
-            <div class="invalid-feedback">
-                <?= implode('<br>', $errors['name']) ?>
-            </div>
-        <?php endif; ?>
-    </div>
+    <!-- Champ Titre -->
+    <?= $form->input('name', 'Titre') ?>
+    <!-- Champ URL -->
+    <?= $form->input('slug', 'URL') ?>
+    <!-- Champ Contenu -->
+    <?= $form->textarea('content', 'Contenu') ?>
+    <!-- Champ Date de Création -->
+    <?= $form->input('created_at', 'Date de Création') ?>
     <button type="submit" class="btn btn-primary">Modifier</button>
 </form>
