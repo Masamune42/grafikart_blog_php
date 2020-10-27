@@ -43,6 +43,15 @@ class Post
     }
 
     /**
+     * Set the value of content
+     */
+    public function setContent(string $content): self
+    {
+        $this->content = $content;
+        return $this;
+    }
+
+    /**
      * Get the formatted value of content
      */
     public function getFormattedContent()
@@ -56,6 +65,18 @@ class Post
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Set the value of name
+     *
+     * @return  self
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**

@@ -5,6 +5,7 @@
 - symfony/var-dumper : Permet de faire de jolis var_dump
 - filp/whoops : Permet d'afficher de belles pages d'erreurs et les erreurs sur les fichiers concernés (avec la ligne concernée)
 - fzaninotto/faker : Permet de générer du texte aléatoire suivant le besoin
+- Valitron\Validator : Permet de valider les données envoyés dans un formulaire
 
 ## Tips
 ### Si on veut utiliser un fichier PHP avec des fonctions dedans pour les utiliser, on peut demander à l'autoloader de le faire :
@@ -57,3 +58,22 @@ list($posts, $pagination) = $table->findPaginated();
 ### Types de classe
 - abstract : Classe qui est prévue pour être héritée
 - final : Classe qui ne sera pas héritée
+
+### Réécriture de fonctions d'une librairie
+On peut réécrire une fonction qui existe dans une librairie afin de modifier son comportement (seulement si la fonction n'est pas privée)
+```PHP
+// On défini le namespace
+namespace App;
+// On utilise la classe de la fonction que l'on veut modifier
+use Valitron\Validator as ValitronValidator;
+// On étend de la classe de base
+class Validator extends ValitronValidator
+{
+    // On redéclare la fonction avec le même nom
+    protected function checkAndSetLabel($field, $message, $params)
+    {
+        // On réécrit la fonction
+        return str_replace('{field}', '', $message);
+    }
+}
+```

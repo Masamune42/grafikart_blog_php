@@ -55,6 +55,20 @@ class Router
     }
 
     /**
+     * Fonction qui crée une route vers une page en méthode GET et POST
+     *
+     * @param string $url URL voulu
+     * @param string $view chemin du fichier PHP à afficher
+     * @param string|null $name nom de la page
+     * @return self
+     */
+    public function match(string $url, string $view, ?string $name = null): self
+    {
+        $this->router->map('GET|POST', $url, $view, $name);
+        return $this;
+    }
+
+    /**
      * Fonction qui récupère la route créée et renvoie vers la bonne target
      *
      * @return void

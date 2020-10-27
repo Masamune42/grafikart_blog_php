@@ -14,7 +14,7 @@ final class PostTable extends Table
     {
         $query = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
         $ok = $query->execute([$id]);
-        if(!$ok)
+        if (!$ok)
             throw new \Exception("Impossible de supprimer l'enregristrement $id dans la table {$this->table}");
     }
 
@@ -56,5 +56,16 @@ final class PostTable extends Table
         $posts = $paginatedQuery->getItems(Post::class);
         (new CategoryTable($this->pdo))->hydratePosts($posts);
         return [$posts, $paginatedQuery];
+    }
+
+    public function update(Post $post): void
+    {
+        $query = $this->pdo->prepare("UPDATE {$this->table} SET name = :name WHERE id = :id");
+        $ok = $query->execute([
+            'id' => $post->getId(),
+            'name' => $post->getName()
+        ]);
+        if (!$ok)
+            throw new \Exception("Impossible de supprimer l'enregristrement $id dans la table {$this->table}");
     }
 }
