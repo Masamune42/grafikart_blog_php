@@ -5,6 +5,7 @@ use App\HTML\Form;
 use App\Model\Post;
 use App\Table\PostTable;
 use App\Validator;
+use App\Validators\PostValidator;
 
 $pdo = Connection::getPDO();
 $postTable = new PostTable($pdo);
@@ -20,11 +21,7 @@ if (!empty($_POST)) {
     // Déclaration de la langue utilisée
     Validator::lang('fr');
     // On instancie Validator en vérifiant tout ce qui est envoyé en POST
-    $v = new Validator($_POST);
-    // Vérification de la règle 'required' sur les champs 'name' et 'slug'
-    $v->rule('required', ['name', 'slug']);
-    // Vérification de la taille entre 3 et 200 sur les champs 'name' et 'slug'
-    $v->rule('lengthBetween', ['name', 'slug'], 3, 200);
+    $v = new PostValidator($_POST, $postTable, $post->getId());
     // On change les éléments de l'article dans l'objet
     $post
         ->setName($_POST['name'])
