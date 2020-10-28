@@ -39,7 +39,7 @@ class Router
         $this->router->map('GET', $url, $view, $name);
         return $this;
     }
-    
+
     /**
      * Fonction qui crée une route vers une page en méthode POST
      *
@@ -83,16 +83,19 @@ class Router
         $params = $match['params'];
         // On démarre le buffer
         $router = $this;
+        $isAdmin = strpos($view, 'admin/') !== false;
+        $layout = $isAdmin ? 'admin/layouts/default' : 'layouts/default';
         ob_start();
         require $this->viewPath . DIRECTORY_SEPARATOR . $view . '.php';
         // On récupère le contenu dans le buffer et on le vide
         $content = ob_get_clean();
         // On charge le layout de la page HTML qui appelle $content à l'intérieur
-        require $this->viewPath . DIRECTORY_SEPARATOR . 'layouts/default.php';
+        require $this->viewPath . DIRECTORY_SEPARATOR . $layout . '.php';
         return $this;
     }
 
-    public function url (string $name, array $params = []) {
+    public function url(string $name, array $params = [])
+    {
         return $this->router->generate($name, $params);
     }
 }
