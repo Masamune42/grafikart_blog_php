@@ -64,7 +64,7 @@ HTML;
      * @param string $key La clé du champ
      * @return string La valeur associée à l'objet du champ
      */
-    private function getValue(string $key): string
+    private function getValue(string $key): ?string
     {
         if (is_array($this->data)) {
             return $this->data[$key] ?? null;

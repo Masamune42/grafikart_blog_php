@@ -75,6 +75,26 @@ final class PostTable extends Table
             'created' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
         ]);
         if (!$ok)
-            throw new \Exception("Impossible de modifier l'enregristrement {$post->getId()} dans la table {$this->table}");
+            throw new \Exception("Impossible de modifier l'enregistrement {$post->getId()} dans la table {$this->table}");
+    }
+
+     /**
+     * Met à jour les information d'un article en BDD, sinon renvoie une Exception
+     *
+     * @param Post $post L'article à modifier
+     * @return void
+     */
+    public function create(Post $post): void
+    {
+        $query = $this->pdo->prepare("INSERT INTO {$this->table} SET name = :name, slug = :slug, created_at = :created, content = :content");
+        $ok = $query->execute([
+            'name' => $post->getName(),
+            'slug' => $post->getSlug(),
+            'content' => $post->getContent(),
+            'created' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
+        ]);
+        if (!$ok)
+            throw new \Exception("Impossible de créer l'enregristrement dans la table {$this->table}");
+        $post->setId($this->pdo->lastInsertId());
     }
 }

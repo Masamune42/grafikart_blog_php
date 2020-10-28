@@ -21,7 +21,7 @@ HTML;
     <div class="card-body">
         <h5 class="card-title"><?= htmlentities($post->getName()) ?></h5>
         <p class="text-muted">
-            <?= $post->getCreated_at()->format('d F Y H:i') ?>
+            <?= $post->getCreatedAt()->format('d F Y H:i') ?>
             <?php if(!empty($post->getCategories())) : ?>
             ::
             <?= implode(', ', $categories) ?>

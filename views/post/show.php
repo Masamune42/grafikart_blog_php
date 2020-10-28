@@ -38,7 +38,7 @@ $title = "Article {$post->getName()}";
 ?>
 
 <h1 class="card-title"><?= e($post->getName()) ?></h1>
-<p class="text-muted"><?= $post->getCreated_at()->format('d F Y H:i') ?></p>
+<p class="text-muted"><?= $post->getCreatedAt()->format('d F Y H:i') ?></p>
 <?php foreach ($post->getCategories() as $k => $category) : ?>
     <?php if ($k > 0) : ?>
         ,
