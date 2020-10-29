@@ -41,4 +41,14 @@ final class CategoryTable extends Table
             $postsByID[$category->getPost_id()]->addCategory($category);
         }
     }
+
+    /**
+     * Fonction qui récupère tous les éléments de la table courante
+     *
+     * @return array Tableau des éléments de la table
+     */
+    public function all(): array
+    {
+        return $this->queryAndFetchAll("SELECT * FROM {$this->table}");
+    }
 }

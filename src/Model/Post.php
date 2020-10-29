@@ -121,7 +121,7 @@ class Post
      *
      * @return  self
      */
-    public function setSlug($slug)
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
 

@@ -10,14 +10,6 @@ final class PostTable extends Table
     protected $table = "post";
     protected $class = Post::class;
 
-    public function delete(int $id): void
-    {
-        $query = $this->pdo->prepare("DELETE FROM {$this->table} WHERE id = ?");
-        $ok = $query->execute([$id]);
-        if (!$ok)
-            throw new \Exception("Impossible de supprimer l'enregristrement $id dans la table {$this->table}");
-    }
-
     /**
      * Retourne dans un tableau les articles de la page et la requête SQL de pagination pour la page courante
      *
@@ -64,37 +56,30 @@ final class PostTable extends Table
      * @param Post $post L'article à modifier
      * @return void
      */
-    public function update(Post $post): void
+    public function updatePost(Post $post): void
     {
-        $query = $this->pdo->prepare("UPDATE {$this->table} SET name = :name, slug = :slug, created_at = :created, content = :content WHERE id = :id");
-        $ok = $query->execute([
-            'id' => $post->getId(),
+        $this->update([
             'name' => $post->getName(),
             'slug' => $post->getSlug(),
             'content' => $post->getContent(),
-            'created' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
-        ]);
-        if (!$ok)
-            throw new \Exception("Impossible de modifier l'enregistrement {$post->getId()} dans la table {$this->table}");
+            'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
+        ], $post->getId());
     }
 
-     /**
+    /**
      * Met à jour les information d'un article en BDD, sinon renvoie une Exception
      *
      * @param Post $post L'article à modifier
      * @return void
      */
-    public function create(Post $post): void
+    public function createPost(Post $post): void
     {
-        $query = $this->pdo->prepare("INSERT INTO {$this->table} SET name = :name, slug = :slug, created_at = :created, content = :content");
-        $ok = $query->execute([
+        $id = $this->create([
             'name' => $post->getName(),
             'slug' => $post->getSlug(),
             'content' => $post->getContent(),
-            'created' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
+            'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
         ]);
-        if (!$ok)
-            throw new \Exception("Impossible de créer l'enregristrement dans la table {$this->table}");
-        $post->setId($this->pdo->lastInsertId());
+        $post->setId($id);
     }
 }

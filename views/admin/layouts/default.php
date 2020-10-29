@@ -12,7 +12,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <a href="<?= $router->url('home'); ?>" class="navbar-brand">Mon site</a>
         <ul class="navbar-nav">
-        <li class="nav-item"><a href="<?= $router->url('admin_posts'); ?>" class="nav-link">Articles</a></li>
+            <li class="nav-item"><a href="<?= $router->url('admin_posts'); ?>" class="nav-link">Articles</a></li>
+            <li class="nav-item"><a href="<?= $router->url('admin_categories'); ?>" class="nav-link">Catégories</a></li>
         </ul>
     </nav>
 
