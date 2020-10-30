@@ -59,19 +59,47 @@ HTML;
     }
 
     /**
+     * Fonction qui crée un champ select en HTML
+     *
+     * @param string $key La clé qui va aussi correspondre au nom
+     * @param string $label Le label à afficher pour le champ
+     * @param array $options tableau des catégories avec clé : ID, valeur : nom
+     * @return string Le code HTML du champ textarea
+     */
+    public function select(string $key, string $label, array $options): string
+    {
+        $optionsHTML = [];
+        $value = $this->getValue($key);
+        foreach ($options as $k => $v) {
+            $selected = in_array($k, $value) ? " selected" : "";
+            $optionsHTML[] = "<option value=\"$k\"$selected>$v</option>";
+        }
+        $optionsHTML = implode('', $optionsHTML);
+        return <<<HTML
+        <div class="form-group">
+            <label for="field{$key}">{$label}</label>
+            <select type="text" id="field{$key}" class="{$this->getInputClass($key)}" name="{$key}" required multiple>
+                {$optionsHTML}
+            </select>
+            {$this->getInvalidFeedack($key)}
+        </div>
+HTML;
+    }
+
+    /**
      * Renvoie la valeur associé à la clé du champ à récupérer
      *
      * @param string $key La clé du champ
      * @return string La valeur associée à l'objet du champ
      */
-    private function getValue(string $key): ?string
+    private function getValue(string $key)
     {
         if (is_array($this->data)) {
             return $this->data[$key] ?? null;
         }
-        $method = 'get' . str_replace(' ','',ucwords(str_replace('_',' ',$key)));
+        $method = 'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
         $value = $this->data->$method();
-        if($value instanceof DateTimeInterface) {
+        if ($value instanceof DateTimeInterface) {
             return $value->format('Y-m-d H:i:s');
         }
         return $value;

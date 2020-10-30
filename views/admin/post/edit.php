@@ -5,6 +5,7 @@ use App\Connection;
 use App\HTML\Form;
 use App\Model\Post;
 use App\ObjectHelper;
+use App\Table\CategoryTable;
 use App\Table\PostTable;
 use App\Validator;
 use App\Validators\PostValidator;
@@ -13,10 +14,12 @@ Auth::check();
 
 $pdo = Connection::getPDO();
 $postTable = new PostTable($pdo);
-
+$categoryTable = new CategoryTable($pdo);
+$categories = $categoryTable->list();
 // On récupère l'article par son id
 /** @var Post */
 $post = $postTable->find($params['id']);
+$categoryTable->hydratePosts([$post]);
 
 $success = false;
 $errors = [];

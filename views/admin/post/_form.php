@@ -3,6 +3,8 @@
     <?= $form->input('name', 'Titre') ?>
     <!-- Champ URL -->
     <?= $form->input('slug', 'URL') ?>
+    <!-- Champ catégorie -->
+    <?= $form->select('categories_ids', 'Catégories', $categories) ?>
     <!-- Champ Contenu -->
     <?= $form->textarea('content', 'Contenu') ?>
     <!-- Champ Date de Création -->

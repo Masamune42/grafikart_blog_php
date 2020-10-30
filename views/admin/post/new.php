@@ -5,6 +5,7 @@ use App\Connection;
 use App\HTML\Form;
 use App\Model\Post;
 use App\ObjectHelper;
+use App\Table\CategoryTable;
 use App\Table\PostTable;
 use App\Validator;
 use App\Validators\PostValidator;
@@ -14,9 +15,11 @@ Auth::check();
 $success = false;
 $errors = [];
 $post = new Post();
+$pdo = Connection::getPDO();
+$categoryTable = new CategoryTable($pdo);
+$categories = $categoryTable->list();
 
 if (!empty($_POST)) {
-    $pdo = Connection::getPDO();
     $postTable = new PostTable($pdo);
     // Déclaration de la langue utilisée
     Validator::lang('fr');

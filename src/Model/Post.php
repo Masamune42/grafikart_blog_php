@@ -146,4 +146,13 @@ class Post
         $category->setPost($this);
         return $this;
     }
+
+    public function getCategoriesIds(): array
+    {
+        $ids = [];
+        foreach ($this->categories as $category) {
+            $ids[] = $category->getId();
+        }
+        return $ids;
+    }
 }
