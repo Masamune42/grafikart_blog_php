@@ -24,8 +24,6 @@ $errors = [];
 $fields = ['name', 'slug'];
 
 if (!empty($_POST)) {
-    // Déclaration de la langue utilisée
-    Validator::lang('fr');
     // On instancie Validator en vérifiant tout ce qui est envoyé en POST
     $v = new CategoryValidator($_POST, $table, $item->getId());
     // On change les éléments de l'article dans l'objet

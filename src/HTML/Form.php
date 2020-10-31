@@ -78,7 +78,7 @@ HTML;
         return <<<HTML
         <div class="form-group">
             <label for="field{$key}">{$label}</label>
-            <select type="text" id="field{$key}" class="{$this->getInputClass($key)}" name="{$key}" required multiple>
+            <select type="text" id="field{$key}" class="{$this->getInputClass($key)}" name="{$key}[]" required multiple>
                 {$optionsHTML}
             </select>
             {$this->getInvalidFeedack($key)}

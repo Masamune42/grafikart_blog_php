@@ -21,14 +21,17 @@ $categories = $categoryTable->list();
 
 if (!empty($_POST)) {
     $postTable = new PostTable($pdo);
-    // Déclaration de la langue utilisée
-    Validator::lang('fr');
     // On instancie Validator en vérifiant tout ce qui est envoyé en POST
-    $v = new PostValidator($_POST, $postTable, $post->getId());
+    $v = new PostValidator($_POST, $postTable, $post->getId(), $categories);
     // On change les éléments de l'article dans l'objet
     ObjectHelper::hydrate($post, $_POST, ['name', 'content', 'slug', 'created_at']);
     if ($v->validate()) {
+        // Début de la transaction
+        $pdo->beginTransaction();
         $postTable->createPost($post);
+        $postTable->attachCategories($post->getId(), $_POST['categories_ids']);
+        // Fin de la transaction
+        $pdo->commit();
         header('Location: '. $router->url('admin_post', ['id' => $post->getId()]). '?created=1');
         exit;
     } else { // Sinon, on renvoie les erreurs

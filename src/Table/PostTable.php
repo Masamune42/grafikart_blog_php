@@ -2,6 +2,7 @@
 
 namespace App\Table;
 
+use App\Model\Category;
 use App\Model\Post;
 use App\PaginatedQuery;
 
@@ -81,5 +82,21 @@ final class PostTable extends Table
             'created_at' => $post->getCreatedAt()->format('Y-m-d H:i:s') // On converti au bon format en string
         ]);
         $post->setId($id);
+    }
+
+    /**
+     * Associe les bonnes catégories à un article
+     *
+     * @param int $id L'id de l'article
+     * @param Category[] $categories La liste des catégories
+     * @return void
+     */
+    public function attachCategories(int $id, array $categories)
+    {
+        $this->pdo->exec('DELETE FROM post_category WHERE post_id = ' . $id);
+        $query = $this->pdo->prepare('INSERT INTO post_category SET post_id = ?, category_id = ?');
+        foreach ($categories as $category) {
+            $query->execute([$id, $category]);
+        }
     }
 }

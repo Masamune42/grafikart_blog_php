@@ -8,7 +8,6 @@ use App\ObjectHelper;
 use App\Table\CategoryTable;
 use App\Validator;
 use App\Validators\CategoryValidator;
-use App\Validators\PostValidator;
 
 Auth::check();
 
@@ -19,8 +18,6 @@ $item = new Category();
 if (!empty($_POST)) {
     $pdo = Connection::getPDO();
     $table = new CategoryTable($pdo);
-    // Déclaration de la langue utilisée
-    Validator::lang('fr');
     // On instancie Validator en vérifiant tout ce qui est envoyé en POST
     $v = new CategoryValidator($_POST, $table);
     // On change les éléments de la catégorie dans l'objet

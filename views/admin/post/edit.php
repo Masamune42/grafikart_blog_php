@@ -25,14 +25,18 @@ $success = false;
 $errors = [];
 
 if (!empty($_POST)) {
-    // Déclaration de la langue utilisée
-    Validator::lang('fr');
     // On instancie Validator en vérifiant tout ce qui est envoyé en POST
-    $v = new PostValidator($_POST, $postTable, $post->getId());
+    $v = new PostValidator($_POST, $postTable, $post->getId(), $categories);
     // On change les éléments de l'article dans l'objet
     ObjectHelper::hydrate($post, $_POST, ['name', 'content', 'slug', 'created_at']);
     if ($v->validate()) {
-        $postTable->updatePost($post);
+        // Début de la transaction
+        $pdo->beginTransaction();
+        $postTable->updatePost($post, $_POST['categories_ids']);
+        $postTable->attachCategories($post->getId(), $_POST['categories_ids']);
+        // Fin de la transaction
+        $pdo->commit();
+        $categoryTable->hydratePosts([$post]);
         $success = true;
     } else { // Sinon, on renvoie les erreurs
         $errors = $v->errors();

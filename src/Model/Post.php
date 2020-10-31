@@ -137,6 +137,16 @@ class Post
     }
 
     /**
+     * @param Category[] $categories
+     * @return self
+     */
+    public function setCategories(array $categories): self
+    {
+        $this->categories = $categories;
+        return $this;
+    }
+
+    /**
      * @param Category $category
      * @return self
      */

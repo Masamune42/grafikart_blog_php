@@ -3,6 +3,7 @@
 namespace App\Table;
 
 use App\Model\Category;
+use App\Model\Post;
 use PDO;
 
 final class CategoryTable extends Table
@@ -13,7 +14,7 @@ final class CategoryTable extends Table
     /**
      * Fonction qui permet d'associer les catégories aux articles envoyés en paramètre
      *
-     * @param App\Model\Post[] $posts
+     * @param Post[] $posts
      * @return void
      */
     public function hydratePosts(array $posts): void
@@ -22,6 +23,8 @@ final class CategoryTable extends Table
         $postsByID = [];
         // On récupère l'id de chaque post et on y place chaque post correspondant
         foreach ($posts as $post) {
+            // On enlève toutes les catégories liées à l'article avant de récupérer les informations pour éviter d'afficher les anciennes déjà associées
+            $post->setCategories([]);
             $postsByID[$post->getId()] = $post;
         }
         /** @var Category[] */
