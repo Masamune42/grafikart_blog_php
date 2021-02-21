@@ -1,5 +1,14 @@
 # Projet Grafikart PHP
 
+## Installation
+Installation des modules, initialisation de l'autoload, remplissage de la BDD et lancement du projet sur le dossier public/
+```
+composer install
+composer dump-autoload
+php .\commands\fill.php
+php -S localhost:8080 -t public
+```
+
 ## Packages installés
 - altorouter/altorouter : Permet de faire le routing vers les views
 - symfony/var-dumper : Permet de faire de jolis var_dump
